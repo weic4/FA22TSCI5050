@@ -53,6 +53,7 @@ whatisthis <- function(xx){
 foo <- 500;
 bar <- foo <- 500;
 bar <- foo;
+hello <- 100;
 #' It's not a formal rule, it's rarely even written down, but `foo`, `baz`,
 #' `bat`, etc. are throw-away variables people use for testing. If you need more
 #' test variables, just make up three letter ones that start with `b`.

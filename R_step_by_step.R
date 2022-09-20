@@ -33,6 +33,7 @@ library(pander); # format tables
 library(printr); # set limit on number of lines printed
 library(broom); # allows to give clean dataset
 library(dplyr); #add dplyr library
+library(survival);
 
 options(max.print=42);
 panderOptions('table.split.table',Inf); panderOptions('table.split.cells',Inf);
@@ -323,9 +324,42 @@ iris [["Species"]]
 #' how to select columns and rows at same time
 #+ df_columnsrows
 iris[4:10,prevar]
+#' Loading veteran cancer data set
+data(veteran)
+1:nrow(veteran)
+seq_len(nrow(veteran))
+sample(  seq_len(nrow(veteran)),5  )
+mycolumn <- "time"
+veteran[[mycolumn]]
+veteran[[mycolumn]][1:5]
+veteran[[mycolumn]][sample(  seq_len(nrow(veteran)),5  )]
+veteran$time[sample(  seq_len(nrow(veteran)),5  )]
+veteran[,mycolumn][sample(  seq_len(nrow(veteran)),5  )]
+veteran[sample(  seq_len(nrow(veteran)),5  ),mycolumn]
+veteran
+veteran[sample(  seq_len(nrow(veteran)),5  ),mycolumn] <- NA
+veteran
+#' recreating veteran data set
+rm(veteran)
+data(veteran)
+mycolumns <- names(veteran)
+
+#' randomly removing values from each column
+for(xx in mycolumns) {
+  message("processing", xx)
+  veteran[sample(  seq_len(nrow(veteran)),5  ),xx] <- NA
+}
+
+#' replace missing values with 999 survival time
+is.na(veteran$time)
+ifelse(is.na(veteran$time), max(veteran$time,na.rm = TRUE), veteran$time)
+
 
 #' # Datasets and `dplyr`
 #+ Working with datasets and DPLYR
+veteran[[mycolumn]][sample(  seq_len(nrow(veteran)),5  )]
+nrow(veteran) %>% seq_len() %>% sample(5) %>% slice(veteran, .) %>% select(mycolumn)%>% unlist %>% unname
+nrow(veteran) %>% seq_len() %>% sample(5) %>% slice(veteran, .) %>% pull(mycolumn)
 
 r"(/Users/YOURNAME/Desktop/projects/tsci/TSCI 5050 self/dataset)" %>% gsub("////","/",.) # to replace anything in the address
 list.files("/Users/YOURNAME/Desktop/projects/tsci/TSCI 5050 self/dataset") # to see anyfiles in the folder

@@ -325,7 +325,7 @@ iris [["Species"]]
 #+ df_columnsrows
 iris[4:10,prevar]
 #' Loading veteran cancer data set
-data(veteran)
+#data(veteran)
 1:nrow(veteran)
 seq_len(nrow(veteran))
 sample(  seq_len(nrow(veteran)),5  )
@@ -341,19 +341,30 @@ veteran[sample(  seq_len(nrow(veteran)),5  ),mycolumn] <- NA
 veteran
 #' recreating veteran data set
 rm(veteran)
-data(veteran)
+#data(veteran)
 mycolumns <- names(veteran)
 
-#' randomly removing values from each column
+#' #creating missing values in multiple columns
 for(xx in mycolumns) {
   message("processing", xx)
   veteran[sample(  seq_len(nrow(veteran)),5  ),xx] <- NA
 }
+#' #exporting data
+export(veteran,"veteran.xlsx")
+export(veteran,"veteran.csv")
+export(veteran,"veteran.tsv")
 
+#' #importing data
+veteran2 <- import("veteran.xlsx",which=1)
+ 
 #' replace missing values with 999 survival time
 is.na(veteran$time)
 ifelse(is.na(veteran$time), max(veteran$time,na.rm = TRUE), veteran$time)
 
+#' change variable to numeric values and vice versa
+veteran$celltype %>% factor() %>% as.numeric()
+veteran$trt %>% factor(levels=1:2, labels=c("standard","test")) %>% table
+veteran$prior %>% factor(levels=c(0,10), labels=c("no","yes")) %>% table
 
 #' # Datasets and `dplyr`
 #+ Working with datasets and DPLYR
@@ -361,13 +372,25 @@ veteran[[mycolumn]][sample(  seq_len(nrow(veteran)),5  )]
 nrow(veteran) %>% seq_len() %>% sample(5) %>% slice(veteran, .) %>% select(mycolumn)%>% unlist %>% unname
 nrow(veteran) %>% seq_len() %>% sample(5) %>% slice(veteran, .) %>% pull(mycolumn)
 
-r"(/Users/YOURNAME/Desktop/projects/tsci/TSCI 5050 self/dataset)" %>% gsub("////","/",.) # to replace anything in the address
-list.files("/Users/YOURNAME/Desktop/projects/tsci/TSCI 5050 self/dataset") # to see anyfiles in the folder
+#' #modifying columns
+veteran3 <- mutate(veteran2, trt=factor(trt, levels=1:2, labels=c("standard","test"))
+       , prior=factor(prior, levels=c(0,10), labels=c("no","yes"))
+       , sim_derivative=replicate(n(),sample(10,1) %>% runif() %>% paste(collapse=";"))
+       ,diagtimedays=diagtime*30)
 
-dtset <- list.files("/Users/YOURNAME/Desktop/projects/tsci/TSCI 5050 self/dataset", full.names = TRUE) %>%
-  sapply(import) %>% setNames(.,basename(names(.))) # to change the base names
-example1 <- dtset
-example2 <- example1$Birthweight.sav
+summarise(veteran3, Sample_size=n(), median_survival=median(time, na.rm=TRUE)
+          , mean_survival=mean(status, na.rm=TRUE))
+
+group_by(veteran3, trt) %>% 
+  summarise(Sample_size=n(), median_survival=median(time, na.rm=TRUE), mean_survival=mean(status, na.rm=TRUE))
+
+# r"(/Users/YOURNAME/Desktop/projects/tsci/TSCI 5050 self/dataset)" %>% gsub("////","/",.) # to replace anything in the address
+# list.files("/Users/YOURNAME/Desktop/projects/tsci/TSCI 5050 self/dataset") # to see anyfiles in the folder
+# 
+# dtset <- list.files("/Users/YOURNAME/Desktop/projects/tsci/TSCI 5050 self/dataset", full.names = TRUE) %>%
+#   sapply(import) %>% setNames(.,basename(names(.))) # to change the base names
+# example1 <- dtset
+# example2 <- example1$Birthweight.sav
 
 #+ file_import, echo = FALSE
 # #' ## Importing a File

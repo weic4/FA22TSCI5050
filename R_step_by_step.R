@@ -398,14 +398,19 @@ example2 <- example1$Birthweight.sav
 #' # Linear Models
 #+ linear_models
 
-vetlm <- lm(time~karno,veteran3)
-summary(vetlm) # gives detail summary
-tidy(vetlm)
 nulltime <- time~1
 karnotime <- update(nulltime,.~.+karno)
-update(karnotime, .~.+trt+age)
+predictors <- update(karnotime, .~.+trt+age)
+formulas <- list(nulltime=nulltime, karnotime=karnotime, predictors=predictors)
+vetlm <- lm(time~1,veteran3)
+summary(vetlm) # gives detail summary
+tidy(vetlm)
+mean(veteran3$time, na.rm=TRUE)
+update(vetlm, .~.+karno)
 
+## Automatically fitting multiple linear models
 
+lapply(formulas, lm, data=veteran3)
 
 summary(vetlm)$coeff # gives coefficient column
 glance(vetlm) #gives brief

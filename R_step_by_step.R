@@ -191,7 +191,7 @@ length(foo)
 65:38
 -32:12
 seq_len(12)
-#' In most other languages, you need to use a `for` loop in order to perform
+#' In most other languages, you need to use a `for` loop in order to vetlmorm
 #' some sort of change to a series of values. In R, you often don't have to
 #' when you are working with vectors because a lot of functions (including all
 #' the arithmetic and logical ones above) and be applied to a vector and they
@@ -384,79 +384,43 @@ summarise(veteran3, Sample_size=n(), median_survival=median(time, na.rm=TRUE)
 group_by(veteran3, trt) %>% 
   summarise(Sample_size=n(), median_survival=median(time, na.rm=TRUE), mean_survival=mean(status, na.rm=TRUE))
 
-# r"(/Users/YOURNAME/Desktop/projects/tsci/TSCI 5050 self/dataset)" %>% gsub("////","/",.) # to replace anything in the address
-# list.files("/Users/YOURNAME/Desktop/projects/tsci/TSCI 5050 self/dataset") # to see anyfiles in the folder
-# 
-# dtset <- list.files("/Users/YOURNAME/Desktop/projects/tsci/TSCI 5050 self/dataset", full.names = TRUE) %>%
-#   sapply(import) %>% setNames(.,basename(names(.))) # to change the base names
-# example1 <- dtset
-# example2 <- example1$Birthweight.sav
+r"(/Users/YOURNAME/Desktop/projects/tsci/TSCI 5050 self/dataset)" %>% gsub("////","/",.) # to replace anything in the address
+list.files("/Users/YOURNAME/Desktop/projects/tsci/TSCI 5050 self/dataset") # to see anyfiles in the folder
 
-#+ file_import, echo = FALSE
-# #' ## Importing a File
-# birthweight <- import("/Users/harshitgarg/Desktop/projects/tsci/TSCI 5050 self/dataset/Birthweight.sav")
-#
-# #' ## Introduction to `dplyr`
-# mutate(birthweight, AGE=AGE*12) %>% View() # converting age to months
-# mutate(birthweight, AGEMonths =AGE*12) %>% head() # converting age to months and adding as column
-# mutate(birthweight, AGEMonths = AGE*12, AGEdays= AGEMonths*30.25) %>% View
-# table(birthweight$RACE) # extract a column from a dataset
-# with(birthweight, case_when(RACE== 1~ "Caucasian", RACE== 2~"ASIAN", RACE== 3~ "AFRICAN AMERICAN/BLACK", TRUE~ as.character(RACE))) %>% table()
-#
-# #' Assigning Descriptive Values to a Code
-# mutate(birthweight, AGEMonths = AGE*12, AGEdays= AGEMonths*30.25,
-#        RACEName= case_when(RACE== 1~ "Caucasian",
-#                            RACE== 2~"ASIAN",
-#                            RACE== 3~ "AFRICAN AMERICAN/BLACK",
-#                            TRUE~ as.character(RACE))) %>% head()
-#
-# summary(birthweight$BWT)
-#
-# #' ## The `summarise()` Function
-# #'
-# summary(birthweight$BWT) # gives summary of the particular column min/max, median, quartiles
-# summary(birthweight) # gives summary of all columns min/max, median, quartiles
-# summarise(birthweight) # gives columns and rows in dataset
-# summarise(birthweight, age=median(AGE)) # gives summary measure for a column
-# summarise(birthweight, age=median(AGE), height= median(HT), meanage= mean(AGE))
-# table(birthweight$SMOKE)
-# group_by(birthweight,SMOKE) %>% summarise(birthweight, age=median(AGE), height= median(HT), meanage= mean(AGE))
-# group_by(birthweight,SMOKE) %>% summarise(height= median(HT), meanage= mean(AGE))
-# group_by(birthweight,SMOKE) %>% summarise(across(where(is.numeric),mean)) # summarise dataset by group and give mean for each column
-# group_by(birthweight,SMOKE) %>% summarise(across(where(is.numeric),sd))
-#
-# group_by(birthweight,SMOKE) %>% summarise(across(where(is.numeric),mean, .names = '{.col}_mean'),
-#                                           across(where(is.numeric),sd, .names = '{.col}_sd'))  # gives mean and SD
-#
-# group_by(birthweight,SMOKE) %>% summarise(across(where(is.numeric),list(mean,sd))) # gives list of mean and SD of each column but doesnt tell the names
-# group_by(birthweight,SMOKE) %>% summarise(across(where(is.numeric),list(Mn=mean,StD=sd,Md=median,InQR=IQR))) # gives list of mean and SD and also its names
-# group_by(birthweight,SMOKE) %>% summarise(across(where(is.numeric),list(Mn=mean,StD=sd,Md=median,InQR=IQR))) %>% View # gives all the list and view it
-# group_by(birthweight,SMOKE) %>% mutate(across(where(is.numeric),list(Mn=mean,StD=sd,Md=median,InQR=IQR))) %>% View # gives new columns of aggregate function for each group
-
+dtset <- list.files("/Users/YOURNAME/Desktop/projects/tsci/TSCI 5050 self/dataset", full.names = TRUE) %>%
+  sapply(import) %>% setNames(.,basename(names(.))) # to change the base names
+example1 <- dtset
+example2 <- example1$Birthweight.sav
 
 #' Define location of your files
 #'
 
 #' # Linear Models
 #+ linear_models
-example(lm) # a sample for linear model
 
-perf <- lm(mpg~hp+wt+qsec,mtcars)
-summary(perf) # gives detail summary
-summary(perf)$coeff # gives coefficient column
-glance(perf) #gives brief
-tidy(perf) # gives tidy cleaner version inside
+vetlm <- lm(time~karno,veteran3)
+summary(vetlm) # gives detail summary
+tidy(vetlm)
+nulltime <- time~1
+karnotime <- update(nulltime,.~.+karno)
+update(karnotime, .~.+trt+age)
+
+
+
+summary(vetlm)$coeff # gives coefficient column
+glance(vetlm) #gives brief
+tidy(vetlm) # gives tidy cleaner version inside
 lm(mpg~hp+wt+vs,mtcars) %>% tidy() %>% select(c("estimate","p.value"))
 #+ Debugging
-perf %>% tidy() %>% select(c("estimate","p.value"))
-perf %>% tidy() %>% select(c("estimate","p.value")) %>% slice(-1) # removes top row
-perf %>% tidy() %>% select(c("estimate","p.value")) %>% slice((1:3)) # gives 1 to 3 rows
-perf %>% tidy() %>% select(c("estimate","p.value")) %>% slice(-(1:3)) # removes 1 to 3 rwos
-whatisthis(perf) # gives class of the variable
+vetlm %>% tidy() %>% select(c("estimate","p.value"))
+vetlm %>% tidy() %>% select(c("estimate","p.value")) %>% slice(-1) # removes top row
+vetlm %>% tidy() %>% select(c("estimate","p.value")) %>% slice((1:3)) # gives 1 to 3 rows
+vetlm %>% tidy() %>% select(c("estimate","p.value")) %>% slice(-(1:3)) # removes 1 to 3 rwos
+whatisthis(vetlm) # gives class of the variable
 
-#' View(perf) # view inside of object
+#' View(vetlm) # view inside of object
 
 #+ ## multiple comparison
-perf %>% tidy() %>% select(c("p.value")) %>% slice(-1)
-#'perf %>% tidy() %>% select(c("p.value")) %>% slice(-1) %>% p.adjust()
-perf %>% tidy() %>% select(c("p.value")) %>% slice(-1) %>% unlist() %>% p.adjust()
+vetlm %>% tidy() %>% select(c("p.value")) %>% slice(-1)
+#'vetlm %>% tidy() %>% select(c("p.value")) %>% slice(-1) %>% p.adjust()
+vetlm %>% tidy() %>% select(c("p.value")) %>% slice(-1) %>% unlist() %>% p.adjust()

@@ -435,7 +435,8 @@ dummify(select(veteran3, -"sim_derivative")) %>% cor(use='pairw')
 
 explore(veteran3)
 
-timepredictors <- na.omit(veteran3) %>% select( -"sim_derivative") %>% binarize() %>% correlate(use='pairw', target= time__63_129) 
+timepredictors <- na.omit(veteran3) %>% select( -"sim_derivative") %>% binarize() %>% correlate(use='pairw', target= time__137.5_Inf)
+plot_correlation_funnel(timepredictors)
 #' View(vetlm) # view inside of object
 
 #+ ## multiple comparison

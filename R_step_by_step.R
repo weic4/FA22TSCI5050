@@ -372,7 +372,7 @@ veteran$prior %>% factor(levels=c(0,10), labels=c("no","yes")) %>% table
 #' # Datasets and `dplyr`
 #+ Working with datasets and DPLYR
 veteran[[mycolumn]][sample(  seq_len(nrow(veteran)),5  )]
-nrow(veteran) %>% seq_len() %>% sample(5) %>% slice(veteran, .) %>% select(mycolumn)%>% unlist %>% unname
+nrow(veteran) %>% seq_len() %>% sample(5) %>% slice(veteran, .) %>% select(all_of(mycolumn))%>% unlist %>% unname
 nrow(veteran) %>% seq_len() %>% sample(5) %>% slice(veteran, .) %>% pull(mycolumn)
 
 #' #modifying columns
@@ -428,15 +428,15 @@ whatisthis(vetlm) # gives class of the variable
 
 plot(vetlmmodels$predictors)
 vetlmmodels
-create_report(veteran3)
+# create_report(veteran3)
 plot_correlation(na.omit(veteran3))
 plot_correlation(veteran3, cor_args = list(use = "pairwise.complete.obs"))
 dummify(select(veteran3, -"sim_derivative")) %>% cor(use='pairw')
 
-explore(veteran3)
+# explore(veteran3)
 
-timepredictors <- na.omit(veteran3) %>% select( -"sim_derivative") %>% binarize() %>% correlate(use='pairw', target= time__137.5_Inf)
-plot_correlation_funnel(timepredictors)
+# timepredictors <- na.omit(veteran3) %>% select( -"sim_derivative") %>% binarize() %>% correlate(use='pairw', target= time__137.5_Inf)
+# plot_correlation_funnel(timepredictors)
 #' View(vetlm) # view inside of object
 
 #+ ## multiple comparison
